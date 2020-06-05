@@ -27,5 +27,5 @@ The App will be running on port 3000 (http://localhost:3000/)
 
 * **Mariel Quezada** - *Developer* - [Marielk](https://github.com/Marielk)
 
-You can check the deploy app here -> [Deploy](https://matzii.com/code-challenges/mariel) 
+You can check the deploy app here -> [Yapp-Challenge](https://yapp-challenge.herokuapp.com) 
 :woman: :computer:. 
