@@ -7,25 +7,29 @@
           Volver
       </router-link>
     </div> 
-    
-    <h3 class="title-profile">Ficha del Paciente</h3>
-    <div class="card patient-card">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-6">
-            <img class="user-profile" src="../assets/user1.png">
-          </div>
-          <div class="col-6 text-left">
-            <h6 class="font-weight-bold">Nombre del Paciente</h6>
-              <p v-if="patientsRecords[0]">{{patientsRecords[0].name}}</p>
-            <h6 class="font-weight-bold">Fecha de nacimiento</h6>
-              <p v-if="patientsRecords[0]">{{patientsRecords[0].dob}}</p>
-            <h6 class="font-weight-bold">Estatura</h6>
-              <p v-if="patientsRecords[0]">{{patientsRecords[0].height}}</p>
+    <div v-if="loading">
+      <img class="loading" src="../assets/loader.png">
+    </div>
+
+    <div v-else>
+      <h3 class="title-profile">Ficha del Paciente</h3>
+      <div class="card patient-card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-6">
+              <img class="user-profile" src="../assets/user1.png">
+            </div>
+            <div class="col-6 text-left">
+              <h6 class="font-weight-bold">Nombre del Paciente</h6>
+                <p v-if="patientsRecords[0]">{{patientsRecords[0].name}}</p>
+              <h6 class="font-weight-bold">Fecha de nacimiento</h6>
+                <p v-if="patientsRecords[0]">{{patientsRecords[0].dob}}</p>
+              <h6 class="font-weight-bold">Estatura</h6>
+                <p v-if="patientsRecords[0]">{{patientsRecords[0].height}}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
       <h3 class="subtitle-profile">Registro de ingresos del Paciente</h3>
       <div class="table-container">
         <div class="table-head-container">
@@ -40,7 +44,7 @@
             </thead>
           </table>
         </div>
-         <div class="table-body-container">
+          <div class="table-body-container">
             <table class="row">
               <tbody class="col-10 m-auto">
               <tr v-for="record in patientsRecords" :key="record.id" class="table-row spaced">
@@ -53,6 +57,7 @@
           </table>
         </div>
       </div>
+    </div>
       
   </div>
 
@@ -65,7 +70,8 @@ export default {
   data () {
     return {
       api: 'https://jsonmock.hackerrank.com/api/medical_records',
-      patientsRecords : []
+      patientsRecords : [],
+      loading: true
     }
   },
   created: function ()  {
@@ -93,7 +99,8 @@ export default {
             formatedRecords.push(formatedRecord)
           })
           this.patientsRecords = this.sortByDate(formatedRecords)
-      })
+          
+      }).catch(error => { console.error(error) }).finally(() => (this.loading = false))
     },
     formatDate: function (date) {
       const formatDate = this.$moment(date).format();
@@ -154,4 +161,5 @@ export default {
   .spaced{
     height: 50px;
   }
+  
 </style>

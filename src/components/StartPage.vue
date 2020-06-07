@@ -1,46 +1,50 @@
 <template>
     <div class="container page-wrap">
       <h1 id="title">Yapp Medical Challenge!</h1>
-      <img id="main-img" src="../assets/diagnostic.svg">
-      <div class="row">
-        <div class="col-12 mt-5 mb-5">
-          <h5>Buscar pacientes por nombre o apellido:</h5>
-          <input id="nameInput" v-on:keyup.enter ="filterByUser()" v-on:keyup.delete = "fetchFirst()" placeholder="Bob...">
-          <button v-on:click="filterByUser()" class="btn btn-info">Buscar</button>
-        </div>
+      <div v-if="loading">
+        <img class="loading" src="../assets/loader.png">
       </div>
-    
-      <div class="table-container">
-          <div class="table-head-container">
-            <table class="row" style="height:50px">
-              <thead class="col-10 m-auto">
-                <tr class="d-flex justify-content-between">
-                  <th class="">Nombre del Paciente</th>
-                  <th class="">Diagnostico</th>
-                  <th class="">Medico tratante</th>
-                  <th class="">...</th>
-                </tr>
-              </thead>
-            </table>
+      <div v-else>
+        <img id="main-img" src="../assets/diagnostic.svg">
+        <div class="row">
+          <div class="col-12 mt-5 mb-5">
+            <h5>Buscar pacientes por nombre o apellido:</h5>
+            <input id="nameInput" v-on:keyup.enter ="filterByUser()" v-on:keyup.delete = "fetchFirst()" placeholder="Bob...">
+            <button v-on:click="filterByUser()" class="btn btn-info">Buscar</button>
           </div>
- 
-          <div class="table-body-container">
-            <table class="row">
-              <tbody class="col-10 m-auto">
-                <tr v-for="patient in patientsData" :key="patient.id" class="table-row">
-                  <td class="item-info cel-1">{{patient.name}}</td>
-                  <td class="item-info cel-2">{{patient.diagnosis}}</td>
-                  <td class="item-info cel-3">{{patient.doctor}}</td>
-                  <td class="item-info cel-4">
-                    <router-link :to="{ path: '/patient', query: { patientID: patient.id }}" class="nav-link">
-                      <span class="btn-ficha">Ir a la </span> ficha
-                      <img class="arrow btn-ficha" src="../assets/arrow.png">
-                    </router-link>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        </div>  
+        <div class="table-container">
+            <div class="table-head-container">
+              <table class="row" style="height:50px">
+                <thead class="col-10 m-auto">
+                  <tr class="d-flex justify-content-between">
+                    <th class="">Nombre del Paciente</th>
+                    <th class="">Diagnostico</th>
+                    <th class="">Medico tratante</th>
+                    <th class="">...</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+  
+            <div class="table-body-container">
+              <table class="row">
+                <tbody class="col-10 m-auto">
+                  <tr v-for="patient in patientsData" :key="patient.id" class="table-row">
+                    <td class="item-info cel-1">{{patient.name}}</td>
+                    <td class="item-info cel-2">{{patient.diagnosis}}</td>
+                    <td class="item-info cel-3">{{patient.doctor}}</td>
+                    <td class="item-info cel-4">
+                      <router-link :to="{ path: '/patient', query: { patientID: patient.id }}" class="nav-link">
+                        <span class="btn-ficha">Ir a la </span> ficha
+                        <img class="arrow btn-ficha" src="../assets/arrow.png">
+                      </router-link>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+        </div>
       </div>
     </div>
 </template>
@@ -52,7 +56,8 @@ export default {
   data () {
     return {
       api: 'https://jsonmock.hackerrank.com/api/medical_records',
-      patientsData: []
+      patientsData: [],
+      loading: true
     }
   },
   created: function ()  {
@@ -63,7 +68,7 @@ export default {
       this.$http.get(this.api).then((response) => {
         const allData = response.data.data
         this.patientsData = this.cleanData(allData)
-      })
+      }).catch(error => { console.error(error) }).finally(() => (this.loading = false))
     },
     cleanData: function (data) {
       // elimina los pacientes repetidos del listado
@@ -167,4 +172,85 @@ export default {
       display: inline-flex;
     }
   }
+  /* animacion spinner */
+  .loading {
+  position: fixed;
+  z-index: 999;
+  height: 6em;
+  width: 6em;
+  overflow: visible;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  animation-name: spinner;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+
+  @-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
 </style>
